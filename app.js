@@ -10,21 +10,21 @@ var connection = mysql.createConnection({
     user: 'root',
     password: 'defaultitis',
     database: 'yelpcamp'
-})
+});
 
-var campgrounds=[];
+var campgrounds = [];
 var newCampgrounds;
 
-connection.query('SELECT * from yelpcamp', function(err, results) {
-    for(var i=0;i<results.length;i++){
-        var a=JSON.stringify(results[i].name).replace(/"/g, '');
-        var b=JSON.stringify(results[i].image).replace(/"/g, ''); 
-        var d = {name: a, image: b}
-        campgrounds.push(d);
-    }
+// // connection.query('SELECT * from yelpcamp', function(err, results) {
+// //     for(var i=0;i<results.length;i++){
+// //         var a=JSON.stringify(results[i].name).replace(/"/g, '');
+// //         var b=JSON.stringify(results[i].image).replace(/"/g, ''); 
+// //         var d = {name: a, image: b}
+// //         campgrounds.push(d);
+// //     }
 
-console.log(campgrounds);
-   });
+// console.log(campgrounds);
+//    });
 
 // var campgrounds = [
 //         {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
@@ -37,35 +37,50 @@ console.log(campgrounds);
 //         {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
 //         {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"}
 // ];
-console.log(campgrounds);
 
 
 app.get("/",function(req,res){
     res.render("landing")
-})
+});
 
 
 app.get("/campgrounds", function(req, res){
+
+    connection.query('SELECT * from yelpcamp', function(err, results) {
+    for(var i=0;i<results.length;i++){
+        var a=JSON.stringify(results[i].name).replace(/"/g, '');
+        var b=JSON.stringify(results[i].image).replace(/"/g, ''); 
+        var d = {name: a, image: b}
+        campgrounds.push(d);
+    }
+    console.log(campgrounds);
+
     res.render("campgrounds",{campgrounds:campgrounds});
+})
 });
 
+
 app.post("/campgrounds",function(req,res){
-	var name = req.body.name;
-	var image = req.body.image;
-    var newmysql = {name,image};
-    connection.query(
-        'INSERT INTO yelpcamp (name,image) VALUES ?',
-        [items.map(item => [newmysql.name, newmysql.image])],
-        );
-	 newCampgrounds = {name: name, image: image}
-	Campgrounds.push(newCampgrounds);
+    
+    //console.log(req.body)
+	var x = req.body.name;
+	var y = req.body.image;
+    
+    //console.log(x)
+    connection.query("insert into yelpcamp (name,image) VALUES (?,?)", [x,y] ,function(err, result)      
+    {                                                      
+      if (err)
+         throw err;
+    });
+    
 	res.redirect("/campgrounds")
-})
+});
 
 app.get("/campgrounds/new",function(req,res){
 	res.render("new");
-})
+});
 
 app.listen(9000,function(){
-	console.log("app listening on 9000!")
-})
+    console.log("app listening on 9000!")
+});
+
