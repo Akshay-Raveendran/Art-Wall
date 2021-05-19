@@ -1,1 +1,1 @@
-A website to display selected Campgrounds from all over the world
+A website to display your art works. With all features like interactive UI, authentication and authorisation.
